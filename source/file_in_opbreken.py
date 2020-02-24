@@ -1,6 +1,9 @@
 import pandas as pd
 from pathlib import Path
-import shutil
+
+
+#todo add gui
+#todo add functions and paths module
 
 
 file = "file_in/QR_600X50.csv"
