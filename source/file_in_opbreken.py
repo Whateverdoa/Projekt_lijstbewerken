@@ -14,6 +14,7 @@ print(wdir)
 print(file_in.is_file())
 file_tmp = wdir/"file_out/tmp"
 print(file_tmp.is_dir())
+file_concat = Path(r"C:\Users\mike\PycharmProjects\Projekt_lijstbewerken\source\file_out\concat")
 
 aantal_per_rol = 50
 
@@ -40,24 +41,11 @@ for i in range(1, aantal_rollen+1):
     begin += aantal_per_rol
     eind += aantal_per_rol
 
-print(shutil.disk_usage(file_tmp))
 
-# csv_files_in_tmp = [x for x in os.listdir(path) if x.endswith(".csv")]
-# sorted_files = sorted(csv_files_in_tmp)
-# combinatie_binnen_mes = []
-# print(combinatie_binnen_mes)
-# print(combinaties)
-#
-# begin = 0
-# eind = mes
-#
-# for combinatie in range(combinaties):
-#     combinatie_binnen_mes.append(sorted_files[begin:eind])
-#     begin += mes
-#     eind += mes
 
 
 tmp_rollen_lijst = [rol.name for rol in file_tmp.glob("*.csv") if rol.is_file()]
+tmp_rollen_posix_lijst= [rol for rol in file_tmp.glob("*.csv") if rol.is_file()]
 
 
 # print(combinatie_binnen_mes)
@@ -71,14 +59,57 @@ def lijst_opbreker(lijst_in,mes):
 
     for combinatie in range(combinaties):
         # print(combinatie)
-        combinatie_binnen_mes.append(tmp_rollen_lijst[start:end])
+        combinatie_binnen_mes.append(lijst_in[start:end])
         start += mes
         end += mes
     return combinatie_binnen_mes
 
-print(lijst_opbreker(tmp_rollen_lijst,5))
+# print(lijst_opbreker(tmp_rollen_lijst,5))
+# print(lijst_opbreker(tmp_rollen_posix_lijst,5))
+
+# for lijst in lijst_opbreker(tmp_rollen_posix_lijst,5):
+#     print(f'dit is een lijst van 5 : {lijst}')
+
+def kol_naam_lijst_builder(mes=1):
+    kollomnaamlijst=[]
+
+    for count in range(1,mes+1):
+        # 5 = len (list) of mes
+        num = f"num_{count}"
+        omschrijving = f"omschrijving_{count}"
+        pdf = f"pdf_{count}"
+        # kollomnaamlijst.append(num)
+        kollomnaamlijst.append(omschrijving)
+        kollomnaamlijst.append(pdf)
 
 
+    # return ["id"] + kollomnaamlijst
+    return kollomnaamlijst
+
+def lees_per_lijst(lijst_met_posix_paden):
+    """1 lijst in len(lijst) namen uit
+    input lijst met posix paden"""
+    count=1
+    concatlist=[]
+    for posix_pad_naar_file in lijst_met_posix_paden:
+        print(posix_pad_naar_file)
+        naam = f'file{count:>{0}{4}}'
+        print(naam)
+        naam = pd.read_csv(posix_pad_naar_file)
+        concatlist.append(naam)
+        count+=1
+    kolomnamen=kol_naam_lijst_builder(5)
+    lijst_over_axis_1 = pd.concat(concatlist, axis=1)
+    lijst_over_axis_1.columns = [kolomnamen]
+
+
+    # return lijst_over_axis_1.to_csv("test2.csv", index=0)
+    return lijst_over_axis_1
+
+lees_per_lijst(lijst_opbreker(tmp_rollen_posix_lijst,5)[0])
+
+rollen_voor_het_stapelen = [lees_per_lijst(lijst_opbreker(tmp_rollen_posix_lijst,5)[i]
+                             for i in range(aantal_rollen)]
 
 
 
