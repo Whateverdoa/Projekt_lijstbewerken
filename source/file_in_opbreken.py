@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 #todo add gui
-#todo add functions and paths module
+#todo add functions module and paths module
 
 
 file = "file_in/QR_600X50.csv"
@@ -108,8 +108,12 @@ def lees_per_lijst(lijst_met_posix_paden):
 
 lees_per_lijst(lijst_opbreker(tmp_rollen_posix_lijst,5)[0])
 
-rollen_voor_het_stapelen = [lees_per_lijst(lijst_opbreker(tmp_rollen_posix_lijst,5)[i]
-                             for i in range(aantal_rollen)]
+# rollen_voor_het_stapelen = [lees_per_lijst(lijst_opbreker(tmp_rollen_posix_lijst,5)[i]
+#                              for i in range(aantal_rollen)]
+
+for i in range(aantal_rollen//5):
+    naam= f'vdp_null_axis_{i:>{0}{4}}'
+    print(naam)
 
 
 
