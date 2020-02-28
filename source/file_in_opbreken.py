@@ -8,7 +8,7 @@ from pathlib import Path
 order_nummer = "202006799"  # wordt in GUI --> filenaam.stem
 
 file = "file_in/QR_600X50.csv"
-test_file = "test2722020.csv"
+test_file = "test-28-2-2020.csv"
 
 
 
@@ -89,6 +89,7 @@ def wikkel_aan_file_zetten(posixlijst, aantal_per_rol, wikkel, rolnummer):
     # print(f'{naam} ____when its used to append the dataFrame in a list or dict<-----')
     naam = pd.concat([twee_extra, sluitstuk, wikkel_df, df_rol])
 
+
     return naam
 
 
@@ -102,7 +103,7 @@ def files_maken_met_wikkel_en_sluit(posix_rollen_lijst, aantal_per_rol, wikkel, 
         wikkel_aan_file_zetten(posix_rollen_lijst[i], aantal_per_rol, wikkel, rol).to_csv(pad, index=0)
     return csv_naam
 
-
+# todo maak def voor deze list comp
 tmp_rollen_lijst = [rol.name for rol in file_tmp.glob("*.csv") if rol.is_file()]
 tmp_rollen_posix_lijst = [rol for rol in file_tmp.glob("*.csv") if rol.is_file()]
 
