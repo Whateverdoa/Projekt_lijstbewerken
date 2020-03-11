@@ -10,6 +10,12 @@ def main():
 
     layout = [
         [sg.Text('VDP invul formulier', size=(30, 1), font="arial", text_color="orange")],
+
+        [sg.Text('Choose A Folder', size=(35, 1))],
+        [sg.Text('Your Folder', size=(15, 1), auto_size_text=False, justification='right'),
+         sg.InputText('Default Folder'), sg.FolderBrowse()],
+        [sg.Submit(tooltip='Click to submit this window'), sg.Cancel()],
+
         [sg.InputText('202012345', key='ordernummer_1'), sg.Text('Ordernummer')],
         [sg.InputText('', key='totaal'),sg.Text('Totaal')],
 
