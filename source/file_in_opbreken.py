@@ -5,10 +5,10 @@ from pathlib import Path
 # todo add functions module and paths module
 # todo flexibel maken concat en mes en wikkel fucties
 
-order_nummer = "202006799"  # wordt in GUI --> filenaam.stem
+order_nummer = "202011035_1"  # wordt in GUI --> filenaam.stem
 
-file = "file_in/QR_600X50.csv"
-test_file = "test-28-2-2020.csv"
+file = "file_in/Remark1a.csv"
+test_file = "file_out/Remark_out.csv"
 
 
 
@@ -26,9 +26,9 @@ VDP_Def = wdir / "VDP_Def/"
 print(vert.is_dir())
 file_concat = Path(r"C:\Users\mike\PycharmProjects\Projekt_lijstbewerken\source\file_out\concat")
 
-aantal_per_rol = 50
+aantal_per_rol = 2500
 
-df = pd.read_csv(file_in, ";")
+df = pd.read_csv(file_in, ";", dtype="str")
 aantal = len(df)
 print(f'de file bestaat uit {aantal} rows')
 aantal_rollen = aantal // aantal_per_rol
@@ -59,7 +59,7 @@ def breek_naar_csv(csv_file_in, aantalperrol, aantalrollen):
 breek_naar_csv(file_in, aantal_per_rol, aantal_rollen)
 
 
-def wikkel_aan_file_zetten(posixlijst, aantal_per_rol, wikkel, rolnummer):
+def wikkel_aan_file_zetten_original(posixlijst, aantal_per_rol, wikkel, rolnummer):
     """nee de csv file en zet er een sluitetiket en een wikkel aan"""
     rol = pd.read_csv(posixlijst)
     # print(rol.head(1))
@@ -81,7 +81,7 @@ def wikkel_aan_file_zetten(posixlijst, aantal_per_rol, wikkel, rolnummer):
     )
 
     sluitstuk = pd.DataFrame(
-        [[f"{rolnummer} 50 stuck",".", "stans.pdf"]], #f"{rolnummer} {begin} t/m {eind}", "stans.pdf"
+        [[f"{rolnummer}  2000 etiketten",".", "stans.pdf"]], #f"{rolnummer} {begin} t/m {eind}", "stans.pdf"
         columns=["omschrijving" ,"kolom1", "pdf"],
     )
 
@@ -93,13 +93,48 @@ def wikkel_aan_file_zetten(posixlijst, aantal_per_rol, wikkel, rolnummer):
     return naam
 
 
-def files_maken_met_wikkel_en_sluit(posix_rollen_lijst, aantal_per_rol, wikkel, aantalrollen):
+def wikkel_aan_file_zetten(posixlijst, aantal_per_rol, wikkel, rolnummer):
+    """nee de csv file en zet er een sluitetiket en een wikkel aan"""
+    rol = pd.read_csv(posixlijst, dtype="str")
+    # print(rol.head(1))
+
+    df_rol = pd.DataFrame(rol, columns=["kolom1", "pdf","omschrijving"])
+
+    begin = df_rol.iat[0, 0]
+    eind_positie_rol = (aantal_per_rol) - 1
+    eind = df_rol.iat[eind_positie_rol, 0]
+
+    twee_extra = pd.DataFrame(
+        [(".", "stans.pdf", "") for x in range(2)],
+        columns=["kolom1", "pdf","omschrijving"],
+    )
+
+    wikkel_df = pd.DataFrame(
+        [(".", "stans.pdf", "") for x in range(wikkel)],
+        columns=["kolom1", "pdf","omschrijving"],
+    )
+
+    sluitstuk = pd.DataFrame(
+        [[".", "stans.pdf",f"{rolnummer} {begin} t/m {eind} {aantal_per_rol} etiketten"]], #f"{rolnummer} {begin} t/m {eind}", "stans.pdf"
+        columns=["kolom1", "pdf","omschrijving"],
+    )
+
+    naam = f"df_{posixlijst.name:>{0}{4}}"
+    # print(f'{naam} ____when its used to append the dataFrame in a list or dict<-----')
+    naam = pd.concat([twee_extra, sluitstuk, wikkel_df, df_rol])
+
+
+    return naam
+
+
+
+def files_maken_met_wikkel_en_sluit(posix_rollen_lijst, aantal_per_rol, wikkel, aantalrollen, begin_nummer_rol=0):
     """de totale wikkel functie met de wikkel functie erin"""
     for i in range(aantalrollen):
         csv_naam = f'wikkel_sluit_{i:>{0}{5}}.csv'
         pad = Path(file_tmp_2 / csv_naam)
         # print(csv_naam)
-        rol = f'rol_{i + 1:>{0}{3}}'
+        rol = f'rol_{begin_nummer_rol + i + 1:>{0}{3}}'
         wikkel_aan_file_zetten(posix_rollen_lijst[i], aantal_per_rol, wikkel, rol).to_csv(pad, index=0)
     return csv_naam
 
@@ -109,7 +144,7 @@ tmp_rollen_posix_lijst = [rol for rol in file_tmp.glob("*.csv") if rol.is_file()
 
 # wikkel_aan_file_zetten(tmp_rollen_posix_lijst[0], 50, 3).to_csv(file_tmp / test_file)
 
-files_maken_met_wikkel_en_sluit(tmp_rollen_posix_lijst, 50, 3, 600)
+files_maken_met_wikkel_en_sluit(tmp_rollen_posix_lijst, aantal_per_rol, wikkel, aantal_rollen)
 
 print(tmp_rollen_lijst[0:5])
 
@@ -218,21 +253,21 @@ def wikkel_5_baans_tc(input_vdp_posix_lijst, etiketten_Y, in_loop):
         nieuwe_vdp_naam = VDP_Def/file_naam.name
         with open(nieuwe_vdp_naam, "w", encoding="utf-8") as target:
             target.writelines(
-                "omschrijving_1,kolom_1,pdf_1,omschrijving_2,kolom_2,pdf_2,omschrijving_3,kolom_3,pdf_3,omschrijving_4,kolom_4,pdf_4,omschrijving_5,kolom_5,pdf_5\n"
+                "kolom_1,pdf_1,omschrijving_1,kolom_2,pdf_2,omschrijving_2,kolom_3,pdf_3,omschrijving_3,kolom_4,pdf_4,omschrijving_4,kolom_5,pdf_5,omschrijving_5,\n"
             )
             # regel staat zo omdat ik kolomnaam id nog niet erin krijg
             target.writelines(readline[1:etiketten_Y+1])
             # target.writelines(readline[16:(etikettenY+etikettenY-8)])
 
             target.writelines(
-                ",.,stans.pdf,,.,stans.pdf,,.,stans.pdf,,.,stans.pdf,,.,stans.pdf\n"
+                ".,stans.pdf,,.,stans.pdf,,.,stans.pdf,,.,stans.pdf,,.,stans.pdf,,\n"
                 * in_loop
             )  # inloop
 
             target.writelines(readline[1:])  # bestand
 
             target.writelines(
-                ",.,stans.pdf,,.,stans.pdf,,.,stans.pdf,,.,stans.pdf,,.,stans.pdf\n"
+                ".,stans.pdf,,.,stans.pdf,,.,stans.pdf,,.,stans.pdf,,.,stans.pdf,,\n"
                 * in_loop
             )  # uitloop
 
@@ -242,3 +277,8 @@ VDP_final = [vdp for vdp in vert.glob("*.csv") if vdp.is_file()]
 print(VDP_final)
 
 wikkel_5_baans_tc(VDP_final, etiketten_Y, inloop)
+
+#todo cleaner maken
+#todo 15 banen maken
+# todo x aantal vdps
+# todo paden module toevoegen
