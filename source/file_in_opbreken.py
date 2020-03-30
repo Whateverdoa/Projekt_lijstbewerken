@@ -37,7 +37,7 @@ aantal_rollen = aantal // aantal_per_rol
 print(f'aantal rollen = {aantal_rollen}')
 baan = len(df) // 1000
 # print(f'baan = {baan} || wikkel ={rolwikkel}')
-mes = 5
+mes = 15
 combinaties = aantal_rollen // mes
 wikkel = 3  # +2 = 5
 etiketten_Y = 17
@@ -221,8 +221,8 @@ for lijst_met_posix in lijst_tmp2:
     vdp_hor_stap = f'vdp_hor_stap_{count:>{0}{4}}.csv'
     vdp_hor_stap = hor / vdp_hor_stap
     # print(vdp_hor_stap)
-    df = lees_per_lijst(lijst_met_posix, 5)
-    # print(df.tail(1))
+    df = lees_per_lijst(lijst_met_posix, mes)
+    print(df.tail(5))
     lees_per_lijst(lijst_met_posix, mes).to_csv(vdp_hor_stap, index=0)
 
     count += 1
