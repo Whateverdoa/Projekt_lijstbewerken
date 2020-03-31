@@ -186,12 +186,12 @@ def kol_naam_lijst_builder(mes_waarde=1):
 
     for count in range(1, mes_waarde + 1):
         # 5 = len (list) of mes
-        num = f"omschrijving_{count}"
-        omschrijving = f"kolom_{count}"
+        num = f"kolom_{count}"
+        omschrijving = f"omschrijving_{count}"
         pdf = f"pdf_{count}"
         kollomnaamlijst.append(num)
-        kollomnaamlijst.append(omschrijving)
         kollomnaamlijst.append(pdf)
+        kollomnaamlijst.append(omschrijving)
 
     # return ["id"] + kollomnaamlijst
     return kollomnaamlijst
@@ -317,3 +317,5 @@ wikkel_n_baans_tc(VDP_final, etiketten_Y, inloop, mes)
 # todo 15 banen maken
 # todo x aantal vdps
 # todo paden module toevoegen
+
+#todo where does the extracolumn come from?
