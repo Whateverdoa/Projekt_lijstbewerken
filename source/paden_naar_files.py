@@ -1,14 +1,14 @@
 import pandas as pd
 from pathlib import Path
 
-file = "file_in/QR_600X50.csv"
+file = "file_in/202011035/Remark1.csv"
 test_file = "test2722020.csv"
 
 wdir = Path.cwd()
 file_in = wdir / file
 print(wdir)
 print(file_in.is_file())
-file_out_test= r"C:\Users\Dhr. Ten Hoonte\PycharmProjects\Projekt_lijstbewerken\source\file_in\202011034\output"
+file_out_test= r"C:\Users\Dhr. Ten Hoonte\PycharmProjects\Projekt_lijstbewerken\source\file_in\202011035\output"
 file_tmp = wdir / "file_out/tmp"
 file_tmp_2 = wdir / "file_out/tmp2"
 hor = wdir / "file_out/hor"

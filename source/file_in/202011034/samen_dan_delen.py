@@ -2,17 +2,22 @@ import pandas as pd
 from pathlib import Path
 import source.paden_naar_files as pad
 
+# schrijf een paden module
 
-map=sorted(Path(r'C:\Users\Dhr. Ten Hoonte\PycharmProjects\Projekt_lijstbewerken\source\file_in\202011034').glob('*.csv'))
-maplijst=[]
+map = sorted(
+    Path(r'C:\Users\Dhr. Ten Hoonte\PycharmProjects\Projekt_lijstbewerken\source\file_in\202011035').glob('*.csv'))
+maplijst = []
 for file in map:
-
     maplijst.append(pd.read_csv(file))
 
 samen = pd.concat(maplijst, axis=0)
-samencsv = pd.concat(maplijst, axis=0).to_csv("output\huismerk_samen.csv", index=0)
+padd = Path(
+    r"C:\Users\Dhr. Ten Hoonte\PycharmProjects\Projekt_lijstbewerken\source\file_in\202011035\output\Remark_samen.csv")
+samencsv = pd.concat(maplijst, axis=0).to_csv(padd, index=0)
 
-lengte_dataframe= len(samen)
+lengte_dataframe = len(samen)
+print(lengte_dataframe)
+print(((lengte_dataframe // 3) + 5000) / 15)
 
 
 def samenvoegen_map_csvs(padnaarcsv):
@@ -34,4 +39,5 @@ def breek_naar_csv(csv_file_in, aantalperrol, aantalrollen, dataframe):
         begin += aantalperrol
         eind += aantalperrol
 
-breek_naar_csv(r"source\file_in\202011034\output\huismerk_samen.csv",1500000,3,samen)
+
+breek_naar_csv(r"source\file_in\202011035\output\Remark_samen.csv", 1500000, 2, samen)
