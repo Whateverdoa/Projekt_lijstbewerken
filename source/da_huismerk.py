@@ -7,7 +7,7 @@ from pathlib import Path
 # todo add functions module and paths module
 # todo flexibel maken concat en mes en wikkel fucties
 
-order_nummer = "202011034_3"  # wordt in GUI --> filenaam.stem
+order_nummer = "test"  # wordt in GUI --> filenaam.stem
 # source\file_in\202011034\Huismerk0.csv
 file = r"file_in\202011034\output\file_0003.csv"
 test_file = "file_out/Remark_out2-4-2020.csv"
@@ -31,12 +31,12 @@ file_concat = Path(r"C:\Users\mike\PycharmProjects\Projekt_lijstbewerken\source\
 aantal_per_rol = 2500
 begin_rolnummer = 1200  # count zero, will fix default = 0 voor rol 1
 
-df = pd.read_csv(file_in, ";", dtype="str")
-aantal = len(df)
+dataframe_from_csv_file_in = pd.read_csv(file_in, ";", dtype="str")
+aantal = len(dataframe_from_csv_file_in)
 
 aantal_rollen = aantal // aantal_per_rol
 
-baan = len(df) // 2500
+baan = len(dataframe_from_csv_file_in) // 2500
 
 mes = 15
 combinaties = aantal_rollen // mes
@@ -48,8 +48,9 @@ print(f'de file bestaat uit {aantal} rows')
 print(f'aantal rollen = {aantal_rollen}')
 print(f'baan = {baan} || wikkel ={wikkel + 2}')
 
+# todo stop er een csv in en maak er in de functie een dataframe van.
 
-def breek_naar_csv(csv_file_in, aantalperrol, aantalrollen):
+def breek_naar_csv(dataframe_from_csv_file_in, posix_dir_pad, aantalperrol, aantalrollen):
     """# dit is een functie waard maak een dataframe
     van lijst en maak dan x aantal csv files"""
 
@@ -57,19 +58,19 @@ def breek_naar_csv(csv_file_in, aantalperrol, aantalrollen):
     eind = aantalperrol
 
     for i in range(1, aantalrollen + 1):
-        rol = f'{file_tmp}/rol_{i:>{0}{4}}.csv'
-        df.iloc[begin:eind].to_csv(rol, index=0)
+        rol = f'{posix_dir_pad}/rol_{i:>{0}{4}}.csv'
+        dataframe_from_csv_file_in.iloc[begin:eind].to_csv(rol, index=0)
         begin += aantalperrol
         eind += aantalperrol
 
 
-breek_naar_csv(file_in, aantal_per_rol, aantal_rollen)
+breek_naar_csv(dataframe_from_csv_file_in, file_tmp, aantal_per_rol, aantal_rollen)
 
 
 
 
 def wikkel_aan_file_zetten(posixlijst, aantal_per_rol, wikkel, rolnummer):
-    """nee de csv file en zet er een sluitetiket en een wikkel aan"""
+    """neem de csv file en zet er een sluitetiket en een wikkel aan inclusief rolnummer"""
     rol = pd.read_csv(posixlijst, dtype="str")
     # print(rol.head(1))
 
@@ -117,7 +118,7 @@ def lijstmaker_uit_posixpad_csv(padnaam):
     rollen_posix_lijst = [rol for rol in padnaam.glob("*.csv") if rol.is_file()]
     return rollen_posix_lijst
 
-# todo maak def voor deze list comp
+# todo maak def voor deze list comp :done
 tmp_rollen_lijst = [rol.name for rol in file_tmp.glob("*.csv") if rol.is_file()]
 tmp_rollen_posix_lijst = [rol for rol in file_tmp.glob("*.csv") if rol.is_file()]
 
@@ -192,7 +193,7 @@ def lees_per_lijst(lijst_met_posix_paden, mes_waarde):
 
 # hier komt een stukje num verz om de hoek kijken
 
-# todo def maken
+# todo def maken : done
 def horizontaal_samenvoegen(opgebroken_posix_lijst, map_uit, meswaarde):
     count = 1
     for lijst_met_posix in opgebroken_posix_lijst:
@@ -211,8 +212,8 @@ for lijst_met_posix in lijst_tmp2:
     vdp_hor_stap = f'vdp_hor_stap_{count:>{0}{4}}.csv'
     vdp_hor_stap = hor / vdp_hor_stap
     # print(vdp_hor_stap)
-    df = lees_per_lijst(lijst_met_posix, mes)
-    print(df.tail(5))
+    dataframe_from_csv_file_in = lees_per_lijst(lijst_met_posix, mes)
+    print(dataframe_from_csv_file_in.tail(5))
     lees_per_lijst(lijst_met_posix, mes).to_csv(vdp_hor_stap, index=0)
 
     count += 1
@@ -269,7 +270,8 @@ def kolom_naam_gever_num_pdf_omschrijving(mes=1):
 def wikkel_n_baans_tc(input_vdp_posix_lijst, etiketten_Y, in_loop, mes):
     """last step voor VDP adding in en uitloop"""
 
-    inlooplijst = (".,stans.pdf,," * mes) + "\n"
+    inlooplijst = (".,stans.pdf,," * mes)
+    inlooplijst = inlooplijst[:-2] + "\n" # removes empty column in finaal file
 
     for file_naam in input_vdp_posix_lijst:
         with open(f"{file_naam}", "r", encoding="utf-8") as target:
@@ -299,8 +301,8 @@ print(VDP_final)
 wikkel_n_baans_tc(VDP_final, etiketten_Y, inloop, mes)
 
 # todo cleaner maken
-# todo 15 banen maken
+# todo 15 banen maken : n banen done
 # todo x aantal vdps
 # todo paden module toevoegen
 
-#todo where does the extracolumn come from?
+#todo where does the extra column come from? done:inloopstring fixed
