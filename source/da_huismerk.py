@@ -7,10 +7,10 @@ from pathlib import Path
 # todo add functions module and paths module
 # todo flexibel maken concat en mes en wikkel fucties
 
-order_nummer = "202011034_2"  # wordt in GUI --> filenaam.stem
+order_nummer = "202011034_3"  # wordt in GUI --> filenaam.stem
 # source\file_in\202011034\Huismerk0.csv
-file = r"file_in\202011034\output\file_0002.csv"
-test_file = "file_out/Remark_out.csv"
+file = r"file_in\202011034\output\file_0003.csv"
+test_file = "file_out/Remark_out2-4-2020.csv"
 
 wdir = Path.cwd()
 print(wdir)
@@ -29,7 +29,7 @@ print(vert.is_dir())
 file_concat = Path(r"C:\Users\mike\PycharmProjects\Projekt_lijstbewerken\source\file_out\concat")
 
 aantal_per_rol = 2500
-begin_rolnummer = 600  # count zero, will fix default = 0 voor rol 1
+begin_rolnummer = 1200  # count zero, will fix default = 0 voor rol 1
 
 df = pd.read_csv(file_in, ";", dtype="str")
 aantal = len(df)
@@ -66,37 +66,6 @@ def breek_naar_csv(csv_file_in, aantalperrol, aantalrollen):
 breek_naar_csv(file_in, aantal_per_rol, aantal_rollen)
 
 
-def wikkel_aan_file_zetten_original(posixlijst, aantal_per_rol, wikkel, rolnummer):
-    """nee de csv file en zet er een sluitetiket en een wikkel aan"""
-    rol = pd.read_csv(posixlijst)
-    # print(rol.head(1))
-
-    df_rol = pd.DataFrame(rol, columns=["omschrijving", "kolom1", "pdf"])
-
-    begin = df_rol.iat[0, 0]
-    eind_positie_rol = (aantal_per_rol) - 1
-    eind = df_rol.iat[eind_positie_rol, 0]
-
-    twee_extra = pd.DataFrame(
-        [("", ".", "stans.pdf") for x in range(2)],
-        columns=["omschrijving", "kolom1", "pdf"],
-    )
-
-    wikkel_df = pd.DataFrame(
-        [("", ".", "stans.pdf") for x in range(wikkel)],
-        columns=["omschrijving", "kolom1", "pdf"],
-    )
-
-    sluitstuk = pd.DataFrame(
-        [[f"{rolnummer}  2000 etiketten", ".", "stans.pdf"]],  # f"{rolnummer} {begin} t/m {eind}", "stans.pdf"
-        columns=["omschrijving", "kolom1", "pdf"],
-    )
-
-    naam = f"df_{posixlijst.name:>{0}{4}}"
-    # print(f'{naam} ____when its used to append the dataFrame in a list or dict<-----')
-    naam = pd.concat([twee_extra, sluitstuk, wikkel_df, df_rol])
-
-    return naam
 
 
 def wikkel_aan_file_zetten(posixlijst, aantal_per_rol, wikkel, rolnummer):
@@ -143,6 +112,10 @@ def files_maken_met_wikkel_en_sluit(posix_rollen_lijst, aantal_per_rol, wikkel, 
         wikkel_aan_file_zetten(posix_rollen_lijst[i], aantal_per_rol, wikkel, rol).to_csv(pad, index=0)
     return csv_naam
 
+
+def lijstmaker_uit_posixpad_csv(padnaam):
+    rollen_posix_lijst = [rol for rol in padnaam.glob("*.csv") if rol.is_file()]
+    return rollen_posix_lijst
 
 # todo maak def voor deze list comp
 tmp_rollen_lijst = [rol.name for rol in file_tmp.glob("*.csv") if rol.is_file()]
@@ -220,6 +193,18 @@ def lees_per_lijst(lijst_met_posix_paden, mes_waarde):
 # hier komt een stukje num verz om de hoek kijken
 
 # todo def maken
+def horizontaal_samenvoegen(opgebroken_posix_lijst, map_uit, meswaarde):
+    count = 1
+    for lijst_met_posix in opgebroken_posix_lijst:
+        vdp_hor_stap = f'vdp_hor_stap_{count:>{0}{4}}.csv'
+        vdp_hor_stap = map_uit/ vdp_hor_stap
+        # print(vdp_hor_stap)
+        df = lees_per_lijst(lijst_met_posix, mes)
+        print(df.tail(5))
+        lees_per_lijst(lijst_met_posix, mes).to_csv(vdp_hor_stap, index=0)
+
+        count += 1
+
 
 count = 1
 for lijst_met_posix in lijst_tmp2:
@@ -233,20 +218,20 @@ for lijst_met_posix in lijst_tmp2:
     count += 1
 
 
-def stapel_df_baan(lijstin, ordernummer):
+def stapel_df_baan(naam,lijstin, ordernummer, map_uit):
     stapel_df = []
     for lijst_naam in lijstin:
         print(lijst_naam)
         to_append_df = pd.read_csv(
             f"{lijst_naam}", ";", dtype="str", index_col=0)
         stapel_df.append(to_append_df)
-    pd.concat(stapel_df, axis=0).to_csv(f"{vert}/vdp_{ordernummer}.csv", ";")
+    pd.concat(stapel_df, axis=0).to_csv(f"{map_uit}/{naam}_{ordernummer}.csv", ";")
 
 
 hor_lijst = [rol for rol in hor.glob("*.csv") if rol.is_file()]
 print(hor_lijst)
 
-stapel_df_baan(hor_lijst, order_nummer)
+stapel_df_baan("VDP",hor_lijst, order_nummer, vert)
 
 print("klaar?  alleen nog in en uitloop")
 
