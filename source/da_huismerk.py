@@ -2,14 +2,19 @@
 
 import pandas as pd
 from pathlib import Path
+from source.paden_naar_files import cleaner, list_of_files_to_clean
 
 # todo add gui
 # todo add functions module and paths module
 # todo flexibel maken concat en mes en wikkel fucties
 
-order_nummer = "test"  # wordt in GUI --> filenaam.stem
+order_nummer = "202011035_6"  # wordt in GUI --> filenaam.stem
 # source\file_in\202011034\Huismerk0.csv
-file = r"file_in\202011034\output\file_0003.csv"
+file = r"file_in\202011035\output\file_0006.csv"
+aantal_per_rol = 2500
+begin_rolnummer = 1200  # count zero, will fix default = 0 voor rol 1
+mes = 15
+
 test_file = "file_out/Remark_out2-4-2020.csv"
 
 wdir = Path.cwd()
@@ -28,8 +33,7 @@ VDP_Def = wdir / "VDP_Def/"
 print(vert.is_dir())
 file_concat = Path(r"C:\Users\mike\PycharmProjects\Projekt_lijstbewerken\source\file_out\concat")
 
-aantal_per_rol = 2500
-begin_rolnummer = 1200  # count zero, will fix default = 0 voor rol 1
+
 
 dataframe_from_csv_file_in = pd.read_csv(file_in, ";", dtype="str")
 aantal = len(dataframe_from_csv_file_in)
@@ -38,15 +42,15 @@ aantal_rollen = aantal // aantal_per_rol
 
 baan = len(dataframe_from_csv_file_in) // 2500
 
-mes = 15
+
 combinaties = aantal_rollen // mes
 wikkel = 19  # +2 = 21
 etiketten_Y = 54
 inloop = etiketten_Y * 10
 
 print(f'de file bestaat uit {aantal} rows')
-print(f'aantal rollen = {aantal_rollen}')
-print(f'baan = {baan} || wikkel ={wikkel + 2}')
+print(f'aantal rollen = {aantal_rollen} van {aantal_per_rol}')
+print(f'baan = {baan} || wikkel = {wikkel + 2} etiketten')
 
 # todo stop er een csv in en maak er in de functie een dataframe van.
 
@@ -126,7 +130,7 @@ tmp_rollen_posix_lijst = [rol for rol in file_tmp.glob("*.csv") if rol.is_file()
 
 files_maken_met_wikkel_en_sluit(tmp_rollen_posix_lijst, aantal_per_rol, wikkel, aantal_rollen, begin_rolnummer)
 
-print(tmp_rollen_lijst[0:5])
+# print(tmp_rollen_lijst[0:5])
 
 
 def lijst_opbreker(lijst_in, mes_waarde):
@@ -144,8 +148,8 @@ def lijst_opbreker(lijst_in, mes_waarde):
 
 # todo maak def voor deze list comp
 tmp_rollen_posix_lijst_met_wikkel = [rol for rol in file_tmp_2.glob("*.csv") if rol.is_file()]
-print(tmp_rollen_posix_lijst_met_wikkel)
-
+# print(tmp_rollen_posix_lijst_met_wikkel)
+print("lijst_tmp2")
 lijst_tmp2 = lijst_opbreker(tmp_rollen_posix_lijst_met_wikkel, mes)
 
 
@@ -201,11 +205,12 @@ def horizontaal_samenvoegen(opgebroken_posix_lijst, map_uit, meswaarde):
         vdp_hor_stap = map_uit/ vdp_hor_stap
         # print(vdp_hor_stap)
         df = lees_per_lijst(lijst_met_posix, mes)
-        print(df.tail(5))
+        # print(df.tail(5))
+
         lees_per_lijst(lijst_met_posix, mes).to_csv(vdp_hor_stap, index=0)
 
         count += 1
-
+    return print("hor")
 
 count = 1
 for lijst_met_posix in lijst_tmp2:
@@ -213,7 +218,7 @@ for lijst_met_posix in lijst_tmp2:
     vdp_hor_stap = hor / vdp_hor_stap
     # print(vdp_hor_stap)
     dataframe_from_csv_file_in = lees_per_lijst(lijst_met_posix, mes)
-    print(dataframe_from_csv_file_in.tail(5))
+    # print(dataframe_from_csv_file_in.tail(5))
     lees_per_lijst(lijst_met_posix, mes).to_csv(vdp_hor_stap, index=0)
 
     count += 1
@@ -222,25 +227,26 @@ for lijst_met_posix in lijst_tmp2:
 def stapel_df_baan(naam,lijstin, ordernummer, map_uit):
     stapel_df = []
     for lijst_naam in lijstin:
-        print(lijst_naam)
+        # print(lijst_naam)
         to_append_df = pd.read_csv(
-            f"{lijst_naam}", ";", dtype="str", index_col=0)
+            f"{lijst_naam}", ",", dtype="str", index_col=0)
         stapel_df.append(to_append_df)
-    pd.concat(stapel_df, axis=0).to_csv(f"{map_uit}/{naam}_{ordernummer}.csv", ";")
+    pd.concat(stapel_df, axis=0).to_csv(f"{map_uit}/{naam}_{ordernummer}.csv", ",")
+    return pd.DataFrame(stapel_df)
 
 
 hor_lijst = [rol for rol in hor.glob("*.csv") if rol.is_file()]
-print(hor_lijst)
+# print(hor_lijst)
 
 stapel_df_baan("VDP",hor_lijst, order_nummer, vert)
 
-print("klaar?  alleen nog in en uitloop")
+print("in en uitloop")
 
 
 # testing 123
 
 def kolom_naam_gever_num_pdf_omschrijving(mes=1):
-    """suplies a specific string  met de oplopende kolom namen num_1, pdf_1, omschrijving_1 etc"""
+    """supplies a specific string  met de oplopende kolom namen num_1, pdf_1, omschrijving_1 etc"""
 
     def list_to_string(functie):
         kolom_namen = ""
@@ -266,12 +272,11 @@ def kolom_naam_gever_num_pdf_omschrijving(mes=1):
 
 
 
-
 def wikkel_n_baans_tc(input_vdp_posix_lijst, etiketten_Y, in_loop, mes):
     """last step voor VDP adding in en uitloop"""
 
     inlooplijst = (".,stans.pdf,," * mes)
-    inlooplijst = inlooplijst[:-2] + "\n" # removes empty column in finaal file
+    inlooplijst = inlooplijst[:-1] + "\n" # -1 removes empty column in final file
 
     for file_naam in input_vdp_posix_lijst:
         with open(f"{file_naam}", "r", encoding="utf-8") as target:
@@ -296,13 +301,15 @@ def wikkel_n_baans_tc(input_vdp_posix_lijst, etiketten_Y, in_loop, mes):
 
 
 VDP_final = [vdp for vdp in vert.glob("*.csv") if vdp.is_file()]
-print(VDP_final)
+# print(VDP_final)
 
 wikkel_n_baans_tc(VDP_final, etiketten_Y, inloop, mes)
 
-# todo cleaner maken
-# todo 15 banen maken : n banen done
+
+
 # todo x aantal vdps
 # todo paden module toevoegen
 
-#todo where does the extra column come from? done:inloopstring fixed
+
+
+

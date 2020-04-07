@@ -1,8 +1,12 @@
+''''work around is put al relevant input in da_huismerk file mes rol etc... then run de summary'''
+
+
 import pandas as pd
 from pathlib import Path
-from source.paden_naar_files import file_sum, file_sum_hor,file_sum_vert
+from source.paden_naar_files import file_sum, file_sum_hor,file_sum_vert, VDP_Def
 from source.da_huismerk import tmp_rollen_posix_lijst, begin_rolnummer, aantal_per_rol,aantal_rollen,\
     lijstmaker_uit_posixpad_csv, lijst_opbreker, mes,kol_naam_lijst_builder,lees_per_lijst,stapel_df_baan,horizontaal_samenvoegen, order_nummer
+from source.paden_naar_files import cleaner, list_of_files_to_clean
 
 
 
@@ -66,9 +70,12 @@ opgebroken_lijst = lijst_opbreker(lijstmaker_uit_posixpad_csv(file_sum),mes)
 
 horizontaal_samenvoegen(opgebroken_lijst,file_sum_hor,mes)
 
-stapel_df_baan("Summary",lijstmaker_uit_posixpad_csv(file_sum_hor), order_nummer, file_sum_vert)
+stapel_df_baan("Summary",lijstmaker_uit_posixpad_csv(file_sum_hor), order_nummer, VDP_Def)
 
+print("clean up & done")
 
+for pad in list_of_files_to_clean:
+    cleaner(pad)
 
 
 

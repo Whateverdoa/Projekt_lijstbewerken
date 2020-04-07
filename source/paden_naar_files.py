@@ -32,6 +32,7 @@ file_sum.mkdir(parents=True, exist_ok=True)
 file_sum_hor.mkdir(parents=True, exist_ok=True)
 file_sum_vert.mkdir(parents=True, exist_ok=True)
 
+list_of_files_to_clean = [file_tmp_2,file_tmp,hor, vert,file_sum_hor,file_sum_vert]
 def cleaner(pad):
 
     dir_to_empty = sorted(Path(pad).glob('*.csv'))
@@ -41,4 +42,3 @@ def cleaner(pad):
 
 
 
-cleaner(file_tmp_2)

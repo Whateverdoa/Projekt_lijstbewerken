@@ -17,7 +17,16 @@ samencsv = pd.concat(maplijst, axis=0).to_csv(padd, index=0)
 
 lengte_dataframe = len(samen)
 print(lengte_dataframe)
-print(((lengte_dataframe // 3) + 5000) / 15)
+
+
+a = lengte_dataframe % 6
+print(a)
+
+
+
+
+
+
 
 
 def samenvoegen_map_csvs(padnaarcsv):
@@ -40,4 +49,10 @@ def breek_naar_csv(csv_file_in, aantalperrol, aantalrollen, dataframe):
         eind += aantalperrol
 
 
-breek_naar_csv(r"source\file_in\202011035\output\Remark_samen.csv", 1500000, 2, samen)
+breek_naar_csv(r"source\file_in\202011035\output\Remark_samen.csv", 600000, 6, samen)
+
+map = sorted(
+    Path(r'C:\Users\Dhr. Ten Hoonte\PycharmProjects\Projekt_lijstbewerken\source\file_in\202011035\output').glob('*.csv'))
+maplijst = []
+for file in map:
+    print(len(pd.read_csv(file)))
