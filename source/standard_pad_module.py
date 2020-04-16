@@ -37,7 +37,8 @@ def cleaner(pad):
 
     for file in dir_to_empty:
         file.unlink()
+        pad.rmdir()  # test of dit werkt eerst csv weg dan dir
 
-def testone():
-    return "done"
+    return 0
+
 

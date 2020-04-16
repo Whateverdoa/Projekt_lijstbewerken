@@ -1,4 +1,6 @@
-''''work around is put al relevant input in da_huismerk file mes rol etc... then run de summary'''
+''''Summary is main file
+work around is put al relevant input in da_huismerk
+file mes rol etc... then run de summary'''
 
 
 import pandas as pd
@@ -7,7 +9,6 @@ from source.paden_naar_files import file_sum, file_sum_hor,file_sum_vert, VDP_De
 from source.da_huismerk import tmp_rollen_posix_lijst, begin_rolnummer, aantal_per_rol,aantal_rollen,\
     lijstmaker_uit_posixpad_csv, lijst_opbreker, mes,kol_naam_lijst_builder,lees_per_lijst,stapel_df_baan,horizontaal_samenvoegen, order_nummer
 from source.paden_naar_files import cleaner, list_of_files_to_clean
-
 
 
 def summary_maken(posixlijst, aantal_per_rol, wikkel, rolnummer):
@@ -48,11 +49,6 @@ def summary_maken(posixlijst, aantal_per_rol, wikkel, rolnummer):
 
     return naam
 
-#
-# testpad =  Path(r"C:\Users\Dhr. Ten Hoonte\PycharmProjects\Projekt_lijstbewerken\source\file_out\tmp\rol_0001.csv")
-# print(testpad.is_file())
-# print(summary_maken(testpad,2500,1,1))
-
 def Summary_files_maken_met_wikkel_en_sluit(posix_rollen_lijst, aantal_per_rol, wikkel, aantalrollen, begin_nummer_rol=0):
     """de totale wikkel functie met de wikkel functie erin"""
     for i in range(aantalrollen):
@@ -72,10 +68,21 @@ horizontaal_samenvoegen(opgebroken_lijst,file_sum_hor,mes)
 
 stapel_df_baan("Summary",lijstmaker_uit_posixpad_csv(file_sum_hor), order_nummer, VDP_Def)
 
+
+
+
+
 print("clean up & done")
 
 for pad in list_of_files_to_clean:
+    """removes all the temporary dirs and files"""
     cleaner(pad)
+    # print(pad.is_dir())
+    pad.rmdir()
+
+
+
+
 
 
 

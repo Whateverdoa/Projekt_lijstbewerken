@@ -1,0 +1,12 @@
+202013134_4
+--------------------------------------------------
+deze VDP bestaat uit 300000 etiketten
+aantal rollen = 150 van 2000
+rol nummers = Rol 451 tm Rol 600
+--------------------------------------------------
+combinaties = 10 van 15 banen 
+etiketten_X = 15
+etiketten_Y = 51
+--------------------------------------------------
+wikkel (inclusief sluitetiket) = 25 etiketten
+inloop / uitloop = 510 = 51  x 10 sheets

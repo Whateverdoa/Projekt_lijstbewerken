@@ -2,17 +2,17 @@
 
 import pandas as pd
 from pathlib import Path
-from source.paden_naar_files import cleaner, list_of_files_to_clean
+
 
 # todo add gui
 # todo add functions module and paths module
 # todo flexibel maken concat en mes en wikkel fucties
 
-order_nummer = "202011035_6"  # wordt in GUI --> filenaam.stem
+order_nummer = "202013134_5"  # wordt in GUI --> filenaam.stem
 # source\file_in\202011034\Huismerk0.csv
-file = r"file_in\202011035\output\file_0006.csv"
-aantal_per_rol = 2500
-begin_rolnummer = 1200  # count zero, will fix default = 0 voor rol 1
+file = r"file_in/202013134/file_0005.csv"
+aantal_per_rol = 2000
+begin_rolnummer = 600 # count zero, will fix default = 0 voor rol 1
 mes = 15
 
 test_file = "file_out/Remark_out2-4-2020.csv"
@@ -40,17 +40,35 @@ aantal = len(dataframe_from_csv_file_in)
 
 aantal_rollen = aantal // aantal_per_rol
 
-baan = len(dataframe_from_csv_file_in) // 2500
+baan = len(dataframe_from_csv_file_in) // aantal_per_rol
 
 
 combinaties = aantal_rollen // mes
-wikkel = 19  # +2 = 21
-etiketten_Y = 54
+wikkel = 23  # +2 = 21
+etiketten_Y = 51
 inloop = etiketten_Y * 10
 
-print(f'de file bestaat uit {aantal} rows')
-print(f'aantal rollen = {aantal_rollen} van {aantal_per_rol}')
-print(f'baan = {baan} || wikkel = {wikkel + 2} etiketten')
+summary_name = f'{order_nummer}_summary.txt'
+
+with open(VDP_Def/summary_name, "w") as summary_html:
+
+    print(order_nummer, file=summary_html)
+    print("-" * 50, file=summary_html)
+
+    print(f'deze VDP bestaat uit {aantal} etiketten', file=summary_html)
+    print(f'aantal rollen = {aantal_rollen} van {aantal_per_rol}', file=summary_html)
+    print(f'rol nummers = Rol {begin_rolnummer+1} tm Rol {begin_rolnummer+aantal_rollen}', file=summary_html)
+    print("-" * 50, file=summary_html)
+
+    print(f'combinaties = {combinaties} van {mes} banen ', file=summary_html)
+    print(f'etiketten_X = {mes}', file=summary_html)
+    print(f'etiketten_Y = {etiketten_Y}', file=summary_html)
+    print("-"*50, file=summary_html)
+
+    print(f'wikkel (inclusief sluitetiket) = {wikkel + 2} etiketten', file=summary_html)
+    print(f'inloop / uitloop = {inloop} = {etiketten_Y}  x 10 sheets', file=summary_html)
+
+
 
 # todo stop er een csv in en maak er in de functie een dataframe van.
 
